@@ -110,8 +110,8 @@ namespace GeometryExample
         static void Main(string[] args)
         {
             Console.WriteLine("Оберіть об'єкт:");
-            Console.WriteLine("1 — Куля");
-            Console.WriteLine("2 — Еліпсоїд");
+            Console.WriteLine("1 -- Куля");
+            Console.WriteLine("2 -- Еліпсоїд");
             Console.Write("Ваш вибір: ");
             string choice = Console.ReadLine();
 
@@ -131,3 +131,4 @@ namespace GeometryExample
         }
     }
 }
+
