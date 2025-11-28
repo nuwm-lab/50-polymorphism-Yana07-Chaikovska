@@ -1,168 +1,118 @@
-﻿using System;
+using System;
 
-namespace Shapes3D
+namespace GeometryExample
 {
-    // ============================
-    //        ІНТЕРФЕЙС
-    // ============================
-    public interface IShape3D
+    // ===== Абстрактний базовий клас =====
+    public abstract class Figure3D
     {
-        void SetParameters(double bx, double by, double bz, params double[] values);
-        double Volume();
-        void PrintParameters();
-    }
-
-    // ============================
-    //     АБСТРАКТНИЙ КЛАС
-    // ============================
-    public abstract class Solid : IShape3D
-    {
-        public double CenterX { get; protected set; }
-        public double CenterY { get; protected set; }
-        public double CenterZ { get; protected set; }
-
-        protected Solid() { }
-
-        protected Solid(double centerX, double centerY, double centerZ)
-        {
-            CenterX = centerX;
-            CenterY = centerY;
-            CenterZ = centerZ;
-        }
-
-        public abstract void SetParameters(double bx, double by, double bz, params double[] values);
+        public abstract void SetParameters();
+        public abstract void PrintParameters();
         public abstract double Volume();
-
-        // Метод для встановлення центру (щоб уникати дублювання)
-        protected void SetCenter(double bx, double by, double bz)
-        {
-            CenterX = bx;
-            CenterY = by;
-            CenterZ = bz;
-        }
-
-        public virtual void PrintParameters()
-        {
-            Console.WriteLine($"Center: ({CenterX}, {CenterY}, {CenterZ})");
-        }
     }
 
-    // ============================
-    //           КУЛЯ
-    // ============================
-    public class Sphere : Solid
+    // ===== Клас Куля =====
+    public class Sphere : Figure3D
     {
-        public double Radius { get; private set; }
+        protected double B1, B2, B3; // центр
+        protected double R;          // радіус
 
-        public Sphere() { }
-
-        public Sphere(double bx, double by, double bz, double radius)
-            : base(bx, by, bz)
+        public override void SetParameters()
         {
-            if (radius <= 0)
-                throw new ArgumentOutOfRangeException(nameof(radius), "Radius must be positive.");
-            Radius = radius;
-        }
+            Console.WriteLine("=== Введення параметрів кулі ===");
+            Console.Write("b1 = ");
+            B1 = double.Parse(Console.ReadLine());
 
-        public override void SetParameters(double bx, double by, double bz, params double[] values)
-        {
-            if (values == null || values.Length != 1)
-                throw new ArgumentException("Sphere requires 1 parameter: radius.");
+            Console.Write("b2 = ");
+            B2 = double.Parse(Console.ReadLine());
 
-            if (values[0] <= 0)
-                throw new ArgumentOutOfRangeException(nameof(values), "Radius must be positive.");
+            Console.Write("b3 = ");
+            B3 = double.Parse(Console.ReadLine());
 
-            SetCenter(bx, by, bz);
-            Radius = values[0];
-        }
-
-        public override double Volume()
-        {
-            return 4.0 / 3.0 * Math.PI * Radius * Radius * Radius; // оптимізовано без Math.Pow
+            Console.Write("R = ");
+            R = double.Parse(Console.ReadLine());
         }
 
         public override void PrintParameters()
         {
-            Console.WriteLine("Sphere:");
-            base.PrintParameters();
-            Console.WriteLine($"Radius: {Radius}");
-        }
-    }
-
-    // ============================
-    //         ЕЛІПСОЇД
-    // ============================
-    public class Ellipsoid : Solid
-    {
-        public double AxisA { get; private set; }
-        public double AxisB { get; private set; }
-        public double AxisC { get; private set; }
-
-        public Ellipsoid() { }
-
-        public Ellipsoid(double bx, double by, double bz, double a, double b, double c)
-            : base(bx, by, bz)
-        {
-            if (a <= 0 || b <= 0 || c <= 0)
-                throw new ArgumentOutOfRangeException(nameof(a), "All axes must be positive.");
-
-            AxisA = a;
-            AxisB = b;
-            AxisC = c;
-        }
-
-        public override void SetParameters(double bx, double by, double bz, params double[] values)
-        {
-            if (values == null || values.Length != 3)
-                throw new ArgumentException("Ellipsoid requires 3 parameters: a, b, c.");
-
-            if (values[0] <= 0 || values[1] <= 0 || values[2] <= 0)
-                throw new ArgumentOutOfRangeException(nameof(values), "All axes must be positive.");
-
-            SetCenter(bx, by, bz);
-            AxisA = values[0];
-            AxisB = values[1];
-            AxisC = values[2];
+            Console.WriteLine("=== Куля ===");
+            Console.WriteLine($"Центр: ({B1}, {B2}, {B3})");
+            Console.WriteLine($"Радіус: R = {R}");
         }
 
         public override double Volume()
         {
-            return 4.0 / 3.0 * Math.PI * AxisA * AxisB * AxisC;
+            return 4.0 / 3.0 * Math.PI * Math.Pow(R, 3);
+        }
+    }
+
+    // ===== Клас Еліпсоїд (успадковує кулю) =====
+    public class Ellipsoid : Sphere
+    {
+        private double A1, A2, A3; // півосі
+
+        public override void SetParameters()
+        {
+            Console.WriteLine("=== Введення параметрів еліпсоїда ===");
+
+            Console.Write("b1 = ");
+            B1 = double.Parse(Console.ReadLine());
+
+            Console.Write("b2 = ");
+            B2 = double.Parse(Console.ReadLine());
+
+            Console.Write("b3 = ");
+            B3 = double.Parse(Console.ReadLine());
+
+            Console.Write("a1 = ");
+            A1 = double.Parse(Console.ReadLine());
+
+            Console.Write("a2 = ");
+            A2 = double.Parse(Console.ReadLine());
+
+            Console.Write("a3 = ");
+            A3 = double.Parse(Console.ReadLine());
         }
 
         public override void PrintParameters()
         {
-            Console.WriteLine("Ellipsoid:");
-            base.PrintParameters();
-            Console.WriteLine($"Axes: A = {AxisA}, B = {AxisB}, C = {AxisC}");
+            Console.WriteLine("=== Еліпсоїд ===");
+            Console.WriteLine($"Центр: ({B1}, {B2}, {B3})");
+            Console.WriteLine($"Півосі: A1={A1}, A2={A2}, A3={A3}");
+        }
+
+        public override double Volume()
+        {
+            return 4.0 / 3.0 * Math.PI * A1 * A2 * A3;
         }
     }
 
-    // ============================
-    //            MAIN
-    // ============================
-    public static class Program
+    // ===== Головна програма =====
+    internal class Program
     {
-        static void Main()
+        static void Main(string[] args)
         {
-            try
-            {
-                Console.WriteLine("=== Sphere ===");
-                IShape3D sphere = new Sphere();
-                sphere.SetParameters(1, 2, 3, 5);
-                sphere.PrintParameters();
-                Console.WriteLine($"Volume = {sphere.Volume():F4}\n");
+            Console.WriteLine("Оберіть об'єкт:");
+            Console.WriteLine("1 — Куля");
+            Console.WriteLine("2 — Еліпсоїд");
+            Console.Write("Ваш вибір: ");
+            string userChoose = Console.ReadLine();
 
-                Console.WriteLine("=== Ellipsoid ===");
-                IShape3D ellipsoid = new Ellipsoid();
-                ellipsoid.SetParameters(0, 0, 0, 2, 3, 4);
-                ellipsoid.PrintParameters();
-                Console.WriteLine($"Volume = {ellipsoid.Volume():F4}\n");
-            }
-            catch (Exception ex)
+            Figure3D figure;
+
+            if (userChoose == "1")
             {
-                Console.WriteLine($"Error: {ex.Message}");
+                figure = new Sphere();
             }
+            else
+            {
+                figure = new Ellipsoid();
+            }
+
+            Console.WriteLine();
+            figure.SetParameters();
+            Console.WriteLine();
+            figure.PrintParameters();
+            Console.WriteLine($"Об'єм = {figure.Volume():F4}");
         }
     }
 }
