@@ -5,84 +5,102 @@ namespace GeometryExample
     // ===== Абстрактний базовий клас =====
     public abstract class Figure3D
     {
-        public abstract void SetParameters();
+        public abstract void ReadParameters();
         public abstract void PrintParameters();
         public abstract double Volume();
     }
 
-    // ===== Клас Куля =====
+    // ===== Куля =====
     public class Sphere : Figure3D
     {
-        protected double B1, B2, B3; // центр
-        protected double R;          // радіус
+        public double CenterX { get; private set; }
+        public double CenterY { get; private set; }
+        public double CenterZ { get; private set; }
+        public double Radius  { get; private set; }
 
-        public override void SetParameters()
+        public Sphere() {}
+
+        public override void ReadParameters()
         {
-            Console.WriteLine("=== Введення параметрів кулі ===");
-            Console.Write("b1 = ");
-            B1 = double.Parse(Console.ReadLine());
-
-            Console.Write("b2 = ");
-            B2 = double.Parse(Console.ReadLine());
-
-            Console.Write("b3 = ");
-            B3 = double.Parse(Console.ReadLine());
-
-            Console.Write("R = ");
-            R = double.Parse(Console.ReadLine());
+            CenterX = ReadDouble("Введіть b1: ");
+            CenterY = ReadDouble("Введіть b2: ");
+            CenterZ = ReadDouble("Введіть b3: ");
+            Radius  = ReadDouble("Введіть R: ");
         }
 
         public override void PrintParameters()
         {
             Console.WriteLine("=== Куля ===");
-            Console.WriteLine($"Центр: ({B1}, {B2}, {B3})");
-            Console.WriteLine($"Радіус: R = {R}");
+            Console.WriteLine($"Центр: ({CenterX}, {CenterY}, {CenterZ})");
+            Console.WriteLine($"Радіус: {Radius}");
         }
 
         public override double Volume()
         {
-            return 4.0 / 3.0 * Math.PI * Math.Pow(R, 3);
+            return 4.0 / 3.0 * Math.PI * Math.Pow(Radius, 3);
+        }
+
+        protected double ReadDouble(string message)
+        {
+            double value;
+            Console.Write(message);
+
+            while (!double.TryParse(Console.ReadLine(), out value))
+            {
+                Console.Write("Неправильний формат. Спробуйте ще раз: ");
+            }
+
+            return value;
         }
     }
 
-    // ===== Клас Еліпсоїд (успадковує кулю) =====
-    public class Ellipsoid : Sphere
+    // ===== Еліпсоїд =====
+    public class Ellipsoid : Figure3D
     {
-        private double A1, A2, A3; // півосі
+        public double CenterX { get; private set; }
+        public double CenterY { get; private set; }
+        public double CenterZ { get; private set; }
 
-        public override void SetParameters()
+        public double A1 { get; private set; }
+        public double A2 { get; private set; }
+        public double A3 { get; private set; }
+
+        public Ellipsoid() {}
+
+        public override void ReadParameters()
         {
-            Console.WriteLine("=== Введення параметрів еліпсоїда ===");
+            CenterX = ReadDouble("Введіть b1: ");
+            CenterY = ReadDouble("Введіть b2: ");
+            CenterZ = ReadDouble("Введіть b3: ");
 
-            Console.Write("b1 = ");
-            B1 = double.Parse(Console.ReadLine());
-
-            Console.Write("b2 = ");
-            B2 = double.Parse(Console.ReadLine());
-
-            Console.Write("b3 = ");
-            B3 = double.Parse(Console.ReadLine());
-
-            Console.Write("a1 = ");
-            A1 = double.Parse(Console.ReadLine());
-
-            Console.Write("a2 = ");
-            A2 = double.Parse(Console.ReadLine());
-
-            Console.Write("a3 = ");
-            A3 = double.Parse(Console.ReadLine());
+            A1 = ReadDouble("Введіть a1: ");
+            A2 = ReadDouble("Введіть a2: ");
+            A3 = ReadDouble("Введіть a3: ");
         }
 
         public override void PrintParameters()
         {
             Console.WriteLine("=== Еліпсоїд ===");
-            Console.WriteLine($"Центр: ({B1}, {B2}, {B3})");
-            Console.WriteLine($"Півосі: A1={A1}, A2={A2}, A3={A3}");
+            Console.WriteLine($"Центр: ({CenterX}, {CenterY}, {CenterZ})");
+            Console.WriteLine($"Півосі: ({A1}, {A2}, {A3})");
         }
 
         public override double Volume()
         {
             return 4.0 / 3.0 * Math.PI * A1 * A2 * A3;
+        }
+
+        protected double ReadDouble(string message)
+        {
+            double value;
+            Console.Write(message);
+
+            while (!double.TryParse(Console.ReadLine(), out value))
+            {
+                Console.Write("Неправильний формат. Спробуйте ще раз: ");
+            }
+
+            return value;
         }
     }
 
@@ -95,24 +113,21 @@ namespace GeometryExample
             Console.WriteLine("1 — Куля");
             Console.WriteLine("2 — Еліпсоїд");
             Console.Write("Ваш вибір: ");
-            string userChoose = Console.ReadLine();
+            string choice = Console.ReadLine();
 
             Figure3D figure;
 
-            if (userChoose == "1")
-            {
+            if (choice == "1")
                 figure = new Sphere();
-            }
             else
-            {
                 figure = new Ellipsoid();
-            }
 
             Console.WriteLine();
-            figure.SetParameters();
+            figure.ReadParameters();
+
             Console.WriteLine();
             figure.PrintParameters();
-            Console.WriteLine($"Об'єм = {figure.Volume():F4}");
+            Console.WriteLine($"Об'єм = {figure.Volume():F3}");
         }
     }
 }
